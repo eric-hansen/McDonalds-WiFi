@@ -24,6 +24,11 @@ $header_lines = explode("\r\n", $headers);
 $location = explode(": ", $header_lines[1]);
 $url = $location[1];
 
+$url_parse = parse_url($url);
+
+// This is used for the final step
+$mcd_url = $url_parse['scheme'] . "://" . $url_parse['host'];
+
 $ch = curl_init($url);
 
 // Force cURL to use GET and return the body since we need to parse the HTML.
@@ -61,10 +66,7 @@ foreach($inputs as $input){
     $opts[$attrs->getNamedItem("name")->nodeValue] = $attrs->getNamedItem("value")->nodeValue;
 }
 
-/**
- * TODO: Replace "mcd10331.det" with whatever the user is trying to connect to.
- */
-$ch = curl_init("http://nmd.mcd10331.det.wayport.net/add-ins/mcd2013/mcd_cp_redir.adp");
+$ch = curl_init($mcd_url . "/add-ins/mcd2013/mcd_cp_redir.adp");
 
 curl_setopt_array($ch, array(
     CURLOPT_RETURNTRANSFER => 1,
