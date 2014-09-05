@@ -1,6 +1,28 @@
 <?php
-// The URL could be different (plus this is for a specific McDonalds)
-$url = isset($argv[1]) ? $argv[1] : "http://nmd.mcd10331.det.wayport.net/index.adp?MacAddr=24%3aFD%3a52%3aB0%3a79%3aD9&IpAddr=192%2e168%2e6%2e128&Ip6Addr=&vsgpId=&vsgId=69865&UserAgent=&ProxyHost=&TunnelIfId=152015&VlanId=21";
+/**
+ * Try connecting to Google.  If the HTTP code != 200, we assume that McDonald's WiFi needs (re)validated.
+ * So, we then fetch the redirect URL via the Location HTTP header, and then work on that instead of requiring
+ * it to be manually passed.
+ */
+$ch = curl_init("http://www.google.com");
+
+curl_setopt_array(
+    $ch,
+    array( CURLOPT_HEADER => 1, CURLOPT_RETURNTRANSFER => 1)
+);
+
+$resp = curl_exec($ch);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+if($http_code != 302){
+    die("There is no need to revalidate WiFi session.\n");
+}
+
+list($headers, $body) = explode("\r\n\r\n", $resp);
+$header_lines = explode("\r\n", $headers);
+
+$location = explode(": ", $header_lines[1]);
+$url = $location[1];
 
 $ch = curl_init($url);
 
