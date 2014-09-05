@@ -24,7 +24,7 @@ if($http_code != 200){
 }
 
 $doc = new DOMDocument();
-$doc->loadHTML($html);
+@$doc->loadHTML($html);
 
 // Get all the inputs.  Since the site's HTML is (overly) simplistic, the only form is for establishing a new session
 $inputs = $doc->getElementsByTagName("input");
