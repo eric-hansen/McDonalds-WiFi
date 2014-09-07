@@ -4,6 +4,15 @@
  * So, we then fetch the redirect URL via the Location HTTP header, and then work on that instead of requiring
  * it to be manually passed.
  */
+require_once "vendor/autoload.php";
+
+$notify = new EricHansen\Notifier\Notifier();
+
+$notify_opts = array(
+    "title" => "McDonalds WiFi Authentication",
+    "msg" => ""
+);
+
 $ch = curl_init("http://www.google.com");
 
 curl_setopt_array(
@@ -15,7 +24,9 @@ $resp = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
 if($http_code != 302){
-    die("There is no need to revalidate WiFi session.\n");
+    $notify_opts['msg'] = "There is no need to revalidate WiFi session.";
+    $notify->Notify($notify_opts);
+    exit(1);
 }
 
 list($headers, $body) = explode("\r\n\r\n", $resp);
@@ -80,7 +91,9 @@ $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
 if($http_code == 200)
-    echo("Successfully validated McDonalds WiFi session." . PHP_EOL);
+    $notify_opts["msg"] = "Successfully validated McDonalds WiFi session.";
 else
-    echo("Unable to validate McDonalds WiFi session.  Please try running again." . PHP_EOL);
+    $notify_opts["msg"] = "Unable to validate McDonalds WiFi session.  Please try running again.";
+
+$notify->Notify($notify_opts);
 ?>

@@ -1,0 +1,11 @@
+{
+    "name": "eric-hansen/mcdonalds-wifi",
+    "description": "Automates the process of connecting to McDonalds WiFi (at least for the ones I visit)",
+    "license": "MIT",
+    "require": {
+        "eric-hansen/notifier": "dev-master"
+    },
+    "psr-4": {
+        "EricHansen\\Notifier\\": "vendor/eric-hansen/notifier/src/"
+    }
+}
